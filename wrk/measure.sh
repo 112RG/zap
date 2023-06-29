@@ -1,4 +1,7 @@
 #! /usr/bin/env bash
+
+RESULTS_DIR="/home/rylee/zap/load_test_results"
+
 THREADS=4
 CONNECTIONS=400
 DURATION_SECONDS=10
@@ -57,6 +60,18 @@ if [ "$SUBJECT" = "axum" ] ; then
     PID=$!
     URL=http://127.0.0.1:3000
 fi
+if [ "$SUBJECT" = "hyper_glommio" ] ; then
+    cd wrk/hyper_glommio && cargo build --release
+    ./target/release/hyper_glommio &
+    PID=$!
+    URL=http://127.0.0.1:8000
+fi
+if [ "$SUBJECT" = "hyper_monoio" ] ; then
+    cd wrk/hyper_monoio && cargo build --release
+    ./target/release/hyper_monoio &
+    PID=$!
+    URL=http://127.0.0.1:23300
+fi
 
 if [ "$SUBJECT" = "csharp" ] ; then
     cd wrk/csharp && dotnet publish csharp.csproj -o ./out
@@ -69,7 +84,7 @@ sleep 1
 echo "========================================================================"
 echo "                          $SUBJECT"
 echo "========================================================================"
-wrk -c $CONNECTIONS -t $THREADS -d $DURATION_SECONDS --latency $URL 
-
+#wrk -c $CONNECTIONS -t $THREADS -d $DURATION_SECONDS --latency $URL 
+wrk -c $CONNECTIONS -t $THREADS -d $DURATION_SECONDS --latency $URL > "$RESULTS_DIR/$SUBJECT.txt"
 kill $PID
 

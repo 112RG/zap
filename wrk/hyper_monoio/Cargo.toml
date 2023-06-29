@@ -1,0 +1,12 @@
+[package]
+name = "hyper_monoio"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+monoio = "0.1.5"
+monoio-compat = "0.1.1"
+hyper = {version = "0.14", features = ["http1", "client", "server", "stream"]}
+futures = "0.3"
